@@ -1,0 +1,118 @@
+<div class="uc-head">
+  <h2><span class="uc-num">{{ number() }}</span>{{ useCase().label }}</h2>
+  <p>{{ useCase().blurb }}</p>
+  <div class="flags">
+    <span
+      [class]="'flag ' + (useCase().flags.canSelect ? 'on' : 'off')"
+      matTooltip="canSelect: whether a human may pick rows, or every request acts on all open items"
+      >canSelect {{ useCase().flags.canSelect }}</span
+    >
+    <span
+      [class]="'flag ' + (useCase().flags.canEdit ? 'on' : 'off')"
+      matTooltip="canEdit: whether the payload may be rewritten before approve()"
+      >canEdit {{ useCase().flags.canEdit }}</span
+    >
+    <span
+      [class]="'flag ' + (useCase().flags.canUndo ? 'on' : 'off')"
+      matTooltip="canUndo: whether a success may be recalled inside the window"
+      >canUndo {{ useCase().flags.canUndo }}</span
+    >
+    <span
+      [class]="'flag ' + (useCase().flags.canUndo ? 'on' : 'off')"
+      matTooltip="undoMs: how long the undo window stays open"
+      >undoMs {{ useCase().flags.undoMs ?? 0 }}</span
+    >
+  </div>
+</div>
+
+@if (snapshot(); as snap) {
+  <div class="toolbar">
+    <button class="primary" [disabled]="approveDisabled()" (click)="approve()">
+      {{ approveLabel() }}
+    </button>
+    <button class="ghost" [disabled]="selectedCount() === 0" (click)="deny()">Deny selected</button>
+    <button [disabled]="failedCount() === 0" (click)="retry()">{{ retryLabel() }}</button>
+    <span class="spacer"></span>
+    <span [class]="'pill ' + (failedCount() ? 'bad' : isExecuting() ? 'live' : '')">{{
+      summaryLine()
+    }}</span>
+    <button class="ghost" (click)="reset()">Reset</button>
+  </div>
+
+  @if (snap.queuedCount > 0) {
+    <div class="queue">
+      <span
+        ><b>{{ snap.queuedCount }} new item{{ snap.queuedCount > 1 ? 's' : '' }}</b> arrived while a
+        batch was in flight — held as <code>queued</code> and released when it settles.</span
+      >
+      <span class="spacer"></span>
+      <button class="ghost" (click)="clearQueue()">Clear queue</button>
+    </div>
+  }
+
+  <ul class="rows">
+    @for (record of snap.itemsWithState; track record.item.id) {
+      <li [class]="'row ' + record.status">
+        <div class="row-pick" [class.empty]="!useCase().flags.canSelect">
+          <mat-checkbox
+            [checked]="isSelected(record.item.id)"
+            [disabled]="!isOpen(record.status)"
+            (change)="toggle(record.item.id)"
+            aria-label="Select"
+          />
+        </div>
+
+        <div class="row-main">
+          <div class="row-title-wrap">
+            <span class="row-title">{{ record.item.title }}</span>
+            @if (record.item.risk) {
+              <span [class]="'risk ' + record.item.risk">{{ record.item.risk }}</span>
+            }
+          </div>
+          <div class="row-sub">{{ subtitle(record) }}</div>
+
+          @if (useCase().edit; as edit) {
+            @if (isOpen(record.status)) {
+              @if (edit.kind === 'textarea') {
+                <textarea
+                  class="row-edit"
+                  rows="3"
+                  [attr.aria-label]="edit.label"
+                  [appEditValue]="editValue(record)"
+                  (input)="onEdit(record, $event)"
+                ></textarea>
+              } @else {
+                <input
+                  class="row-edit"
+                  [type]="edit.kind === 'number' ? 'number' : 'text'"
+                  [attr.aria-label]="edit.label"
+                  [appEditValue]="editValue(record)"
+                  (input)="onEdit(record, $event)"
+                />
+              }
+              @if (record.status === 'editing') {
+                <div class="edit-hint">
+                  edited — this is the value <code>onExecute</code> receives
+                </div>
+              }
+            }
+          }
+
+          @if (record.error) {
+            <div class="row-error">{{ record.error }}</div>
+          }
+        </div>
+
+        <div class="row-side">
+          @if (record.status === 'undoing') {
+            <span class="countdown">{{ countdown(record) }}</span>
+            <span class="badge undoing">{{ statusLabel(record.status) }}</span>
+            <button class="recall" (click)="undo(record.item.id)">Recall</button>
+          } @else {
+            <span [class]="'badge ' + record.status">{{ statusLabel(record.status) }}</span>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+}

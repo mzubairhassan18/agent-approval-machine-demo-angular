@@ -1,0 +1,82 @@
+<header class="topbar">
+  <a class="brand" href="#top">
+    <span class="brand-mark">Aa</span>
+    <span>agent-approval-machine</span>
+  </a>
+
+  <nav class="topnav" aria-label="Package links">
+    @for (link of links; track link.href) {
+      <a [href]="link.href" target="_blank" rel="noreferrer">{{ link.label }}</a>
+    }
+  </nav>
+</header>
+
+<nav class="topnav anchors" aria-label="Sections">
+  @for (uc of useCases; track uc.id; let i = $index) {
+    <a [href]="'#' + uc.id"><span class="n">{{ number(i) }}</span> {{ uc.label }}</a>
+  }
+</nav>
+
+<div class="shell" id="top">
+  <main>
+    <div class="hero">
+      <p class="eyebrow">Angular · standalone components · signals</p>
+      <h1>Ten approval flows, one 2.5 kB state machine.</h1>
+      <p class="lede">
+        Every section below is the real <code>agent-approval-machine</code> store — the one the
+        vanilla, Next.js and Vue demos use — wrapped in ~15 lines of Angular. Edit before approving,
+        retry only what failed, recall inside the undo window, and never lose an item that arrives
+        while a batch is in flight.
+      </p>
+      <div class="boot ok">
+        Loaded <code>agent-approval-machine@{{ version }}</code> from the local package tarball — the
+        store drives one standalone component with a signal, and nothing else.
+      </div>
+    </div>
+
+    @for (uc of useCases; track uc.id; let i = $index) {
+      <app-approval-section [id]="uc.id" [useCase]="uc" [index]="i" />
+    }
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <p class="sidebar-label">Use cases</p>
+      <nav class="toc" id="toc" aria-label="On this page">
+        @for (uc of useCases; track uc.id; let i = $index) {
+          <a [href]="'#' + uc.id" [class.active]="activeId() === uc.id">
+            <span class="n">{{ number(i) }}</span><span>{{ uc.label }}</span>
+          </a>
+        }
+      </nav>
+
+      <p class="sidebar-label">Links</p>
+      <ul class="linklist">
+        @for (link of links; track link.href) {
+          <li><a [href]="link.href" target="_blank" rel="noreferrer">{{ link.label }}</a></li>
+        }
+      </ul>
+
+      <p class="sidebar-note">
+        The store is framework-free, so this Angular binding is the glue, not the product. The same
+        ten flows render identically in the Next.js and Vue demos.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer">
+  <p>
+    <code>agent-approval-machine@{{ version }}</code> · zero dependencies · MIT ·
+    <a href="https://www.npmjs.com/package/agent-approval-machine" target="_blank" rel="noreferrer"
+      >npm</a
+    >
+    ·
+    <a
+      href="https://github.com/mzubairhassan18/agent-approval-machine"
+      target="_blank"
+      rel="noreferrer"
+      >GitHub</a
+    >
+  </p>
+</footer>

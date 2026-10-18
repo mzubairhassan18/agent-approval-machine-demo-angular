@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+/* The Material checkbox ships a 40px touch target; rows are dense, so trim it
+   back to the vanilla demo's 16px box without losing the state layer. */
+.row-pick mat-checkbox {
+  --mat-checkbox-touch-target-display: none;
+  --mdc-checkbox-state-layer-size: 24px;
+}
+
+.row-pick mat-checkbox .mdc-checkbox {
+  padding: 0;
+}
+
+.row-main {
+  min-width: 0;
+}
