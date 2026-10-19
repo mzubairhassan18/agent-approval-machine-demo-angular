@@ -68,6 +68,9 @@ export class ApprovalSection implements OnInit, OnDestroy {
   /** The arrival must only fire on the first execute of this section. */
   private arrived = false;
 
+  /** Items that already burned their one failing attempt, so a retry recovers. */
+  private readonly failedOnce = new Set<string>();
+
   /* ---- derived toolbar state ------------------------------------------ */
 
   private readonly summary = computed(() => this.snapshot()?.summary);
@@ -141,8 +144,14 @@ export class ApprovalSection implements OnInit, OnDestroy {
     const failed: { item: ApprovalItem; error: string }[] = [];
     for (const item of batch) {
       const error = uc.fail?.[item.id];
-      if (error) failed.push({ item, error });
-      else succeeded.push(item);
+      // A provider that rate-limits: the first attempt fails, the retry goes
+      // through — which is what the failure messages promise.
+      if (error && !this.failedOnce.has(item.id)) {
+        this.failedOnce.add(item.id);
+        failed.push({ item, error });
+      } else {
+        succeeded.push(item);
+      }
     }
     return { succeeded, failed };
   }
@@ -215,6 +224,7 @@ export class ApprovalSection implements OnInit, OnDestroy {
 
   reset(): void {
     this.arrived = false;
+    this.failedOnce.clear();
     this.service.reset(this.useCase().items.map((item) => ({ ...item })));
   }
 }
