@@ -22,7 +22,7 @@ renders `snapshot()` and forwards clicks back as verbs.
 ## Run it
 
 ```bash
-npm install          # installs agent-approval-machine from the local tarball
+npm install          # installs agent-approval-machine ^0.1.0 from npm
 npm start            # ng serve -> http://localhost:4200
 npm run build        # ng build (production)
 npm test             # unit tests (Angular's vitest builder)
@@ -45,15 +45,11 @@ subpath, so the script passes `--base-href /agent-approval-machine-demo-angular/
 putting it in `angular.json`, which would also move `ng serve` off the root). It also writes
 `docs/.nojekyll`, so Pages' Jekyll step cannot silently drop files.
 
-`agent-approval-machine` is installed from a local tarball for now, straight from
-`package.json`:
+`agent-approval-machine` comes from npm:
 
 ```json
-"agent-approval-machine": "file:D:/framework/_pkgs/agent-approval-machine-0.1.0.tgz"
+"agent-approval-machine": "^0.1.0"
 ```
-
-Once the package is on npm, replace that with a normal semver range
-(`"agent-approval-machine": "^0.1.0"`) — nothing else changes.
 
 ### Headless store check
 
