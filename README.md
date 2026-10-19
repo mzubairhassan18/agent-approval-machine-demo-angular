@@ -7,6 +7,9 @@ ten use cases, same ids, same data, same failure messages, same timings.
 
 **Live: https://mzubairhassan18.github.io/agent-approval-machine-demo-angular/**
 
+> Changing this UI, or how it deploys? [`notes/PROJECTS.md`](https://github.com/mzubairhassan18/agent-approval-machine/blob/main/notes/PROJECTS.md)
+> in the library repo maps all four repos and names the file to open for each kind of change.
+
 The point of the page is that the hard parts of agent approvals are **not** UI work:
 
 | The five conditions every agent rebuilds | Where you see it here |
