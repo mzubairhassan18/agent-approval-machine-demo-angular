@@ -5,6 +5,8 @@ in Angular (standalone components, signals, `@if` / `@for`) with Angular Materia
 This is the Angular sibling of the [Next.js](./README.md#links) and Vue demos: same
 ten use cases, same ids, same data, same failure messages, same timings.
 
+**Live: https://mzubairhassan18.github.io/agent-approval-machine-demo-angular/**
+
 The point of the page is that the hard parts of agent approvals are **not** UI work:
 
 | The five conditions every agent rebuilds | Where you see it here |
