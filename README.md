@@ -27,7 +27,23 @@ npm start            # ng serve -> http://localhost:4200
 npm run build        # ng build (production)
 npm test             # unit tests (Angular's vitest builder)
 npm run store:check  # headless proof of the store, no DOM, no browser
+npm run build:pages  # builds, then writes the site to docs/ for GitHub Pages
 ```
+
+### Where the live demo comes from
+
+No CI and no external host. `npm run build:pages` builds the site and writes it to `docs/`, which
+GitHub Pages serves (source: `main`, `/docs`):
+
+```bash
+npm run build:pages
+git add docs && git commit -m "chore: rebuild pages" && git push
+```
+
+Angular 22's application builder writes to `dist/<project>/browser`, and the site is served from a
+subpath, so the script passes `--base-href /agent-approval-machine-demo-angular/` (rather than
+putting it in `angular.json`, which would also move `ng serve` off the root). It also writes
+`docs/.nojekyll`, so Pages' Jekyll step cannot silently drop files.
 
 `agent-approval-machine` is installed from a local tarball for now, straight from
 `package.json`:
